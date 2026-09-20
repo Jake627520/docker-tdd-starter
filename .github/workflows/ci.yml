@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 容器內以非 root 的 node (uid 1000) 執行；把 checkout 交給它，
+      # 否則 build 寫 dist/ 到 bind-mount 會 EACCES（Linux runner 上 uid 不同）。
+      - name: Make workspace writable by container user
+        run: sudo chown -R 1000:1000 .
+
       # 用專案自己的 Dockerfile 建映像 —— 與本機 Dev Container 同一套環境。
       - name: Build image
         run: docker compose build
