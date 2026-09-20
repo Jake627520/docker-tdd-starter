@@ -1,0 +1,30 @@
+name: CI
+
+# push 到 main 或任何 PR 都觸發，跟本機一樣在「容器內」跑所有守門關卡。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  container-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 用專案自己的 Dockerfile 建映像 —— 與本機 Dev Container 同一套環境。
+      - name: Build image
+        run: docker compose build
+
+      # 依賴裝進 compose 的 node_modules named volume；同一個 job 內後續步驟共用。
+      - name: Install deps (in container)
+        run: docker compose run --rm app npm ci
+
+      - name: Test (in container)
+        run: docker compose run --rm app npm test
+
+      - name: Typecheck (in container)
+        run: docker compose run --rm app npm run typecheck
+
+      - name: Build (in container)
+        run: docker compose run --rm app npm run build
