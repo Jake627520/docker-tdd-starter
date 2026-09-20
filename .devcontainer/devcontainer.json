@@ -1,0 +1,19 @@
+{
+  "name": "node-tdd-openspec",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspace",
+  "remoteUser": "node",
+  // 容器建好後自動安裝依賴，一進去就能跑測試。
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vitest.explorer",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  }
+}

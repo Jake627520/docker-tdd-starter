@@ -1,0 +1,16 @@
+# 備援用途：不想用 Dev Container 時，可用「容器外轉指令 (接法 A)」。
+# 例：docker compose run --rm app npm test
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      # 讓容器內的 node_modules 不被主機蓋掉（避免跨平台二進位衝突）。
+      - node_modules:/workspace/node_modules
+    command: sleep infinity
+
+volumes:
+  node_modules:
